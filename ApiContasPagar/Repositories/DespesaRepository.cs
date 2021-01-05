@@ -8,6 +8,7 @@ using Dapper;
 using ApiContasPagar.Repositorio.Script;
 using ApiContasPagar.ViewModels;
 using System.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace ApiContasPagar.Repositories
 {
@@ -33,6 +34,27 @@ namespace ApiContasPagar.Repositories
                 {
                     var despesa = await conexao.QueryAsync<Despesa>(DespesaScript.Get, new { id });
                     return despesa.FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task<IEnumerable<Despesa>> GetAll()
+        {
+            try
+            {
+                using (SqlConnection conexao = new SqlConnection(_connectionstring))
+                {
+                    var despesa = await conexao.QueryAsync<Despesa>(@"SELECT	ID AS Id,
+		                                                                        DESCRICAO AS Descricao,
+		                                                                        VALOR AS Valor,
+		                                                                        DATA_DESPESA AS Data,
+                                                                                CAST(CASE WHEN PAGO = 'N' THEN 0 ELSE 1 END AS BIT) AS Pago
+                                                                        FROM DESPESA");
+                    return despesa;
                 }
             }
             catch (Exception e)
