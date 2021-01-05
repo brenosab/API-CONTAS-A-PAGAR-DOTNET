@@ -4,6 +4,7 @@ using ApiContasPagar.Services.Interfaces;
 using System;
 using ApiContasPagar.Models;
 using ApiContasPagar.ViewModels;
+using System.Collections.Generic;
 
 namespace ApiContasPagar.Services
 {
@@ -20,6 +21,17 @@ namespace ApiContasPagar.Services
             try
             {
                 return await _repository.GetAll(pageIndex, pageSize);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public async Task<IEnumerable<Despesa>> GetAll()
+        {
+            try
+            {
+                return await _repository.GetAll();
             }
             catch (Exception e)
             {

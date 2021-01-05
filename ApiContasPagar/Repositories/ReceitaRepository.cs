@@ -8,6 +8,7 @@ using Dapper;
 using ApiContasPagar.ViewModels;
 using System.Data.SqlClient;
 using ApiContasPagar.Repositories.Script;
+using System.Collections.Generic;
 
 namespace ApiContasPagar.Repositories
 {
@@ -33,6 +34,26 @@ namespace ApiContasPagar.Repositories
                 {
                     var receita = await conexao.QueryAsync<Receita>(ReceitaScript.Get, new { id });
                     return receita.FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public async Task<IEnumerable<Receita>> GetAll()
+        {
+            try
+            {
+                using (SqlConnection conexao = new SqlConnection(_connectionstring))
+                {
+                    var receitas = await conexao.QueryAsync<Receita>(@"SELECT	ID AS Id,
+		                                                                        DESCRICAO AS Descricao,
+		                                                                        VALOR AS Valor,
+		                                                                        DATA_RECEITA AS Data,
+                                                                                CAST(CASE WHEN RECEBIDO = 'N' THEN 0 ELSE 1 END AS BIT) AS Recebido
+                                                                        FROM Receita");
+                    return receitas;
                 }
             }
             catch (Exception e)

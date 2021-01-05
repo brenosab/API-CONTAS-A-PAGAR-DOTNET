@@ -3,6 +3,7 @@ using ApiContasPagar.Repositories.Interfaces;
 using ApiContasPagar.Services.Interfaces;
 using ApiContasPagar.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ApiContasPagar.Services
@@ -20,6 +21,18 @@ namespace ApiContasPagar.Services
             try
             {
                 return await _repository.GetAll(pageIndex, pageSize);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task<IEnumerable<Receita>> GetAll()
+        {
+            try
+            {
+                return await _repository.GetAll();
             }
             catch (Exception e)
             {
