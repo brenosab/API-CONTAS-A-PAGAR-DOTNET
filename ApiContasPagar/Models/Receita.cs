@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApiContasPagar.Models
 {
-    public class Despesa
+    public class Receita
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,6 +12,6 @@ namespace ApiContasPagar.Models
         public string Descricao { get; set; }
         public decimal Valor { get; set; }
         public DateTime Data { get; set; }
-        public bool Pago { get; set; }
+        public bool Recebido { get; set; }
     }
 }

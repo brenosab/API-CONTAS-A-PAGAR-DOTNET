@@ -1,53 +1,53 @@
-﻿namespace ApiContasPagar.Repositorio.Script
+﻿namespace ApiContasPagar.Repositories.Script
 {
-    public class DespesaScript
+    public class ReceitaScript
     {
         public static string Insert { get => @"
-            INSERT INTO Despesa VALUES(
+            INSERT INTO Receita VALUES(
                 @Descricao,
                 @Valor, 
                 GETDATE(), 
-                @pago)"; }
+                @recebido)"; }
         public static string Get { get => @"
             SELECT	ID AS Id,
 		            DESCRICAO AS Descricao,
 		            VALOR AS Valor,
-		            DATA_DESPESA AS Data,
-                    CAST(CASE WHEN PAGO = 'N' THEN 0 ELSE 1 END AS BIT) AS Pago
-            FROM DESPESA WHERE ID = @Id"; }
+		            DATA_RECEITA AS Data,
+                    CAST(CASE WHEN RECEBIDO = 'N' THEN 0 ELSE 1 END AS BIT) AS Recebido
+            FROM Receita WHERE ID = @Id"; }
 
         public static string Update { get => @"
-            UPDATE Despesa
+            UPDATE Receita
             SET Descricao = @Descricao,
                 Valor = @Valor,
-	            Pago = @Pago
+	            Recebido = @Recebido
             WHERE Id = @Id
             
             SELECT	ID AS Id,
 		            DESCRICAO AS Descricao,
 		            VALOR AS Valor,
-		            DATA_DESPESA AS Data,
-                    CAST(CASE WHEN PAGO = 'N' THEN 0 ELSE 1 END AS BIT) AS Pago
-            FROM    Despesa
+		            DATA_RECEITA AS Data,
+                    CAST(CASE WHEN RECEBIDO = 'N' THEN 0 ELSE 1 END AS BIT) AS Recebido
+            FROM    Receita
             WHERE ID = @Id"; }
 
         public static string Delete { get => @"
-            DELETE FROM Despesa
+            DELETE FROM Receita
             WHERE ID = @id"; }
 
         public static string GetAll { get => @"
             SELECT	ID AS Id,
 		            DESCRICAO AS Descricao,
 		            VALOR AS Valor,
-		            DATA_DESPESA AS Data,
-		            CAST(CASE WHEN PAGO = 'N' THEN 0 ELSE 1 END AS BIT) AS Pago
-            FROM DESPESA 
+		            DATA_RECEITA AS Data,
+		            CAST(CASE WHEN RECEBIDO = 'N' THEN 0 ELSE 1 END AS BIT) AS Recebido
+            FROM Receita 
             ORDER BY Id, Data
             OFFSET @Offset ROWS
 			FETCH NEXT @PageSize ROWS ONLY"; }
 
         public static string GetAllTotalCount { get => @"
             SELECT COUNT(*)
-			FROM Despesa"; }
+			FROM Receita"; }
     }
 }

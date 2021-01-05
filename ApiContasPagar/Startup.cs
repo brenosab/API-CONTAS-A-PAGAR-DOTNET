@@ -1,21 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ApiContasPagar.Repositories;
 using ApiContasPagar.Repositories.Interfaces;
 using ApiContasPagar.Services;
 using ApiContasPagar.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace ApiContasPagar
 {
@@ -54,6 +46,8 @@ namespace ApiContasPagar
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddScoped<IDespesaRepository, DespesaRepository>();
             services.AddScoped<IDespesaService, DespesaService>();
+            services.AddScoped<IReceitaRepository, ReceitaRepository>();
+            services.AddScoped<IReceitaService, ReceitaService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,17 +60,13 @@ namespace ApiContasPagar
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseHttpsRedirection();
-
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

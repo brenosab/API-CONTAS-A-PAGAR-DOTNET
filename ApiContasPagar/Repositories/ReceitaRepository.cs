@@ -5,13 +5,13 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using ApiContasPagar.Repositorio.Script;
 using ApiContasPagar.ViewModels;
 using System.Data.SqlClient;
+using ApiContasPagar.Repositories.Script;
 
 namespace ApiContasPagar.Repositories
 {
-    public class DespesaRepository : IDespesaRepository
+    public class ReceitaRepository : IReceitaRepository
     {
         private const int DefaultPageIndex = 1;
         private const int DefaultPageSize = 5;
@@ -19,20 +19,20 @@ namespace ApiContasPagar.Repositories
         IConfiguration _configuration;
         private string _connectionstring;
 
-        public DespesaRepository(IConfiguration configuration)
+        public ReceitaRepository(IConfiguration configuration)
         {
             _configuration = configuration;
             _connectionstring = _configuration.GetSection("ConnectionStrings").GetSection("EmployeeConnection").Value;
         }
 
-        public async Task<Despesa> Get(string id)
+        public async Task<Receita> Get(string id)
         {
             try
             {
                 using (SqlConnection conexao = new SqlConnection(_connectionstring))
                 {
-                    var despesa = await conexao.QueryAsync<Despesa>(DespesaScript.Get, new { id });
-                    return despesa.FirstOrDefault();
+                    var receita = await conexao.QueryAsync<Receita>(ReceitaScript.Get, new { id });
+                    return receita.FirstOrDefault();
                 }
             }
             catch (Exception e)
@@ -41,18 +41,18 @@ namespace ApiContasPagar.Repositories
             }
         }
 
-        public async Task<string> Post(Despesa despesa)
+        public async Task<string> Post(Receita receita)
         {
             try
             {
                 using (SqlConnection conexao = new SqlConnection(_connectionstring))
                 {
-                    string pago = despesa.Pago == true ? "S" : "N";
-                    var result = await conexao.QueryAsync<Despesa>(DespesaScript.Insert, new
+                    string recebido = receita.Recebido == true ? "S" : "N";
+                    var result = await conexao.QueryAsync<Receita>(ReceitaScript.Insert, new
                     {
-                        despesa.Descricao,
-                        despesa.Valor,
-                        pago
+                        receita.Descricao,
+                        receita.Valor,
+                        recebido
                     });
                     return "Sucesso!!!";
                 }   
@@ -69,11 +69,11 @@ namespace ApiContasPagar.Repositories
             {
                 using (SqlConnection conexao = new SqlConnection(_connectionstring))
                 {
-                    if (!DespesaExists(id))
+                    if (!ReceitaExists(id))
                     {
-                        return ("Despesa não encontrada");
+                        return ("Receita não encontrada");
                     }
-                    var result = await conexao.QueryAsync<Despesa>(DespesaScript.Delete, new { id });
+                    var result = await conexao.QueryAsync<Receita>(ReceitaScript.Delete, new { id });
                     return "Sucesso!!!";
                 }
             }
@@ -83,23 +83,23 @@ namespace ApiContasPagar.Repositories
             }
         }
 
-        public async Task<string> Put(long id, Despesa despesa)
+        public async Task<string> Put(long id, Receita receita)
         {
             try
             {
                 using (SqlConnection conexao = new SqlConnection(_connectionstring))
                 {
-                    if (!DespesaExists(id))
+                    if (!ReceitaExists(id))
                     {
-                        return ("Despesa não encontrada");
+                        return ("Receita não encontrada");
                     }
-                    string pago = despesa.Pago == true ? "S" : "N";
-                    var result = await conexao.QueryAsync<Despesa>(DespesaScript.Update, new 
+                    string recebido = receita.Recebido == true ? "S" : "N";
+                    var result = await conexao.QueryAsync<Receita>(ReceitaScript.Update, new 
                     { 
                         id,
-                        despesa.Descricao,
-                        despesa.Valor,
-                        pago
+                        receita.Descricao,
+                        receita.Valor,
+                        recebido
                     });
                     return "Sucesso!!!";
                 }
@@ -110,21 +110,21 @@ namespace ApiContasPagar.Repositories
             }
         }
 
-        private bool DespesaExists(long id)
+        private bool ReceitaExists(long id)
         {
             using (SqlConnection conexao = new SqlConnection(_connectionstring))
             {
-                return conexao.QueryAsync<string>("SELECT ID FROM Despesa WHERE ID = @id", new { id }).Result.Any();
+                return conexao.QueryAsync<string>("SELECT ID FROM Receita WHERE ID = @id", new { id }).Result.Any();
             }
         }
     
-        public async Task<DespesaViewModel> GetAll(int pageIndex, int pageSize)
+        public async Task<ReceitaViewModel> GetAll(int pageIndex, int pageSize)
         {
             try
             {
                 using (SqlConnection conexao = new SqlConnection(_connectionstring))
                 {
-                    var totalCount = await conexao.QueryAsync<int>(DespesaScript.GetAllTotalCount);
+                    var totalCount = await conexao.QueryAsync<int>(ReceitaScript.GetAllTotalCount);
                     long pageCount = 1;
 
                     pageIndex = pageIndex == 0 ? DefaultPageIndex : pageIndex;
@@ -143,12 +143,12 @@ namespace ApiContasPagar.Repositories
                         hasPreviousPage = ((pageIndex == 1) || (pageIndex > pageCount)) ? false : true
                     };
 
-                    var despesas = await conexao.QueryAsync<Despesa>(DespesaScript.GetAll, new 
+                    var receitas = await conexao.QueryAsync<Receita>(ReceitaScript.GetAll, new 
                     { 
                         PageSize = _pageSize, 
                         Offset = offset 
                     });
-                    return new DespesaViewModel { Despesas = despesas.ToList(), MetaData = metaData };
+                    return new ReceitaViewModel { Receitas = receitas.ToList(), MetaData = metaData };
                 }
             }
             catch (Exception e)
